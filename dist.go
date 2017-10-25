@@ -7,10 +7,10 @@ import (
 )
 
 //distance relate
-func IsDistRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.CtxGeom) bool {
+func IsDistRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.ContextGeometry) bool {
 	var mindist = self.Options().MinDist
 	var seg     =  hull.Segment()
-	var ln_geom = hull.SubPolyline().Geometry
+	var ln_geom = hull.Polyline.Geometry
 
 	var seg_geom = seg
 	var ctx_geom = ctx.Geom

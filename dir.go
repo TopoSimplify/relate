@@ -9,7 +9,7 @@ import (
 )
 
 //direction relate
-func IsDirRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.CtxGeom) bool {
+func IsDirRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.ContextGeometry) bool {
 	var poly = self.Polyline()
 	var subpln = poly.SubPolyline(hull.Range)
 	var segment = pln.New([]*geom.Point{

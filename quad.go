@@ -17,7 +17,7 @@ func DirectionRelate(polyline *pln.Polyline, g geom.Geometry) string {
 	var segdb = rtree.NewRTree(8)
 	var objs = make([]rtree.BoxObj, 0)
 	for _, s := range polyline.Segments() {
-		objs = append(objs, ctx.NewCtxGeom(s, s.I, s.J).AsSelfSegment())
+		objs = append(objs, ctx.New(s, s.I, s.J).AsSelfSegment())
 	}
 	segdb.Load(objs)
 
@@ -74,7 +74,7 @@ func DirectionRelate(polyline *pln.Polyline, g geom.Geometry) string {
 func intersectsQuad(q geom.Geometry, res []*rtree.Node) bool {
 	bln := false
 	for _, node := range res {
-		c := node.GetItem().(*ctx.CtxGeom)
+		c := node.GetItem().(*ctx.ContextGeometry)
 		s := c.Geom.(*seg.Seg)
 		if q.Intersects(s.Segment) {
 			bln = true

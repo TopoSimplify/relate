@@ -7,7 +7,7 @@ import (
 )
 
 //geometry relate
-func IsGeomRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.CtxGeom) bool {
+func IsGeomRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.ContextGeometry) bool {
 	var seg    =  hull.Segment()
 	var subpln = self.Polyline().SubPolyline(hull.Range)
 
