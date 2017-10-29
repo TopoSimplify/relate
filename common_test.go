@@ -21,7 +21,7 @@ func hullGeom(coords []*geom.Point) geom.Geometry {
 	return g
 }
 
-func linear_coords(wkt string) []*geom.Point{
+func linearCoords(wkt string) []*geom.Point{
 	return geom.NewLineStringFromWKT(wkt).Coordinates()
 }
 

@@ -1,21 +1,14 @@
 package relate
 
 import (
-	"simplex/pln"
-	"github.com/intdxdt/geom"
-	"simplex/node"
 	"simplex/ctx"
-	"simplex/lnr"
+	"simplex/node"
 )
 
 //direction relate
-func IsDirRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.ContextGeometry) bool {
-	var poly = self.Polyline()
-	var subpln = poly.SubPolyline(hull.Range)
-	var segment = pln.New([]*geom.Point{
-		poly.Coordinates[hull.Range.I()],
-		poly.Coordinates[hull.Range.J()],
-	})
+func IsDirRelateValid(hull *node.Node, ctx *ctx.ContextGeometry) bool {
+	var subpln = hull.Polyline
+	var segment = hull.SegmentAsPolyline()
 
 	var lnRelate = DirectionRelate(subpln, ctx.Geom)
 	var segRelate = DirectionRelate(segment, ctx.Geom)

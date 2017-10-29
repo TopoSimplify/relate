@@ -3,14 +3,14 @@ package relate
 import (
 	"simplex/node"
 	"simplex/ctx"
-	"simplex/lnr"
+	"simplex/opts"
 )
 
 //distance relate
-func IsDistRelateValid(self lnr.Linear, hull *node.Node, ctx *ctx.ContextGeometry) bool {
-	var mindist = self.Options().MinDist
+func IsDistRelateValid(options *opts.Opts, hull *node.Node, ctx *ctx.ContextGeometry) bool {
+	var mindist =  options.MinDist
 	var seg     =  hull.Segment()
-	var ln_geom = hull.Polyline.Geometry
+	var ln_geom =  hull.Polyline.Geometry
 
 	var seg_geom = seg
 	var ctx_geom = ctx.Geom
