@@ -72,7 +72,7 @@ func DirectionRelate(polyline *pln.Polyline, g geom.Geometry) string {
 
 //find if intersects segment
 func intersectsQuad(q geom.Geometry, res []*rtree.Node) bool {
-	bln := false
+	var bln = false
 	for _, node := range res {
 		c := node.GetItem().(*ctx.ContextGeometry)
 		s := c.Geom.(*seg.Seg)

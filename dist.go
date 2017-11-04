@@ -1,8 +1,8 @@
 package relate
 
 import (
-	"simplex/node"
 	"simplex/ctx"
+	"simplex/node"
 	"simplex/opts"
 )
 
