@@ -28,10 +28,10 @@ func TestQuadRelate(t *testing.T) {
 			pln_c := polyln(wkt_c)
 			pln_d := polyln(wkt_d)
 
-			g.Assert(DirectionRelate(pln_a, ctx)).Equal("TTTTFTTFT")
-			g.Assert(DirectionRelate(pln_b, ctx)).Equal("FTFTTFFFF")
-			g.Assert(DirectionRelate(pln_c, ctx)).Equal("TTTTFTTFF")
-			g.Assert(DirectionRelate(pln_d, ctx)).Equal("TTTTTTFTF")
+			g.Assert(QuadRelate(pln_a, ctx)).Equal("TTTTFTTFT")
+			g.Assert(QuadRelate(pln_b, ctx)).Equal("FTFTTFFFF")
+			g.Assert(QuadRelate(pln_c, ctx)).Equal("TTTTFTTFF")
+			g.Assert(QuadRelate(pln_d, ctx)).Equal("TTTTTTFTF")
 		})
 	})
 }

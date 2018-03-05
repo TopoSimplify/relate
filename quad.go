@@ -13,7 +13,7 @@ import (
 )
 
 //Direction Relate
-func DirectionRelate(polyline *pln.Polyline, g geom.Geometry) string {
+func QuadRelate(polyline *pln.Polyline, g geom.Geometry) string {
 	var segdb = rtree.NewRTree(8)
 	var objs = make([]rtree.BoxObj, 0)
 	for _, s := range polyline.Segments() {
