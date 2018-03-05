@@ -9,6 +9,7 @@ import (
 	"github.com/intdxdt/geom"
 	"github.com/franela/goblin"
 	"simplex/dp"
+	"fmt"
 )
 
 func TestRelate(t *testing.T) {
@@ -36,6 +37,7 @@ func TestRelate(t *testing.T) {
 			neib := geom.NewPolygonFromWKT("POLYGON ((674.7409300316725 422.8229196659948, 674.7409300316725 446.72732507918226, 691.3886409444281 446.72732507918226, 691.3886409444281 422.8229196659948, 674.7409300316725 422.8229196659948))")
 			const_geom := ctx.New(neib, 0, -1).AsContextNeighbour()
 			for _, h := range hulls {
+				fmt.Println(h.Geom.WKT())
 				g.Assert(IsGeomRelateValid( h, const_geom)).IsTrue()
 				g.Assert(IsDirRelateValid( h, const_geom)).IsTrue()
 				g.Assert(IsDistRelateValid(insDP.Options(), h, const_geom)).IsTrue()
