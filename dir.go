@@ -6,6 +6,6 @@ import (
 )
 
 //direction relate
-func IsDirRelateValid(hull *node.Node, ctx *ctx.ContextGeometry) bool {
-	return Homotopy(hull.Coordinates(), ctx.Geom)
+func IsDirRelateValid(hull *node.Node, ctx *ctx.ContextGeometries) bool {
+	return Homotopy(hull.Coordinates(), ctx)
 }

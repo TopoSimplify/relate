@@ -1,24 +1,28 @@
 package relate
 
 import (
-	"simplex/node"
 	"simplex/ctx"
+	"simplex/node"
 )
 
-//geometry relate
-func IsGeomRelateValid(hull *node.Node, ctx *ctx.ContextGeometry) bool {
+//Node geometric relation to other context geometries
+func IsGeomRelateValid(hull *node.Node, contexts *ctx.ContextGeometries) bool {
 	var seg = hull.Segment()
-	var ln_geom = hull.Polyline.Geometry
-	var seg_geom = seg
-	var ctx_geom = ctx.Geom
-
-	var ln_g_inter = ln_geom.Intersects(ctx_geom)
-	var seg_g_inter = seg_geom.Intersects(ctx_geom)
+	var lnGeom = hull.Polyline.Geometry
+	var segGeom = seg
+	var lnGInter, segGInter bool
+	var g *ctx.ContextGeometry
 
 	var bln = true
-	if (seg_g_inter && !ln_g_inter) || (!seg_g_inter && ln_g_inter) {
-		bln = false
+	var geometries = contexts.DataView()
+
+	for i, n := 0, contexts.Len(); bln && i < n; i++ {
+		g = geometries[i]
+		lnGInter = lnGeom.Intersects(g.Geom)
+		segGInter = segGeom.Intersects(g.Geom)
+
+		bln = !((segGInter && !lnGInter) || (!segGInter && lnGInter) )
 	}
-	// both intersects & disjoint
+
 	return bln
 }
