@@ -9,11 +9,11 @@ import (
 //Homotopy Relate
 func Homotopy(coordinates []*geom.Point, contexts *ctx.ContextGeometries) bool {
 	var n = len(coordinates) - 1
-	var linestring = geom.NewLineString(coordinates)
-	var segInters, lineInters, disjointA, disjointB bool
 	var g *ctx.ContextGeometry
 	var a, b, inters []*geom.Point
 	var ln, segment *geom.Segment
+	var linestring = geom.NewLineString(coordinates)
+	var segInters, lineInters, disjointA, disjointB bool
 
 	var bln = true
 	var geometries = contexts.DataView()
