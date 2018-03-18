@@ -4,6 +4,7 @@ import (
 	"simplex/side"
 	"simplex/ctx"
 	"github.com/intdxdt/geom"
+	"fmt"
 )
 
 //Homotopy Relate
@@ -40,6 +41,9 @@ func Homotopy(coordinates []*geom.Point, contexts *ctx.ContextGeometries) bool {
 		a = append([]*geom.Point{}, coordinates[:i+1]...)
 		a = append(a, inters[0])
 		b = append([]*geom.Point{inters[0]}, coordinates[j:]...)
+
+		fmt.Println(geom.NewPolygon(a).WKT())
+		fmt.Println(geom.NewPolygon(b).WKT())
 
 		disjointA = !geom.NewPolygon(a).Intersects(g.Geom)
 		disjointB = !geom.NewPolygon(b).Intersects(g.Geom)
