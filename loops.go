@@ -1,36 +1,61 @@
 package relate
 
 import (
-	"fmt"
 	"sort"
 	"simplex/seg"
 	"github.com/intdxdt/geom"
 	"github.com/intdxdt/rtree"
+	"simplex/ctx"
+	"fmt"
 )
 
-func main() {
-	// POINT(492.23356771259296 -471.9676869728713)
-	//wkt := "LINESTRING ( 109.29167991823921 -370.5295256949482, 135.59232921551876 -389.39738279951825, 173.32804342465897 -368.242512712576, 221.92706930006685 -338.5113439417383, 312.83583534935923 -329.36329201224976, 359.14784824239496 -364.8119932390178, 361.4348612247671 -432.2788762189958, 307.1183028934289 -481.4496553399967, 228.21635500159022 -465.44056446339175, 195.62642000278728 -408.2652399040884, 239.6514199134509 -376.8188113964715, 303.6355381435517 -412.291282735024, 338.5647314010457 -400.83244771137896, 314.05878510111637 -350.1687308679386, 282.1636494109685 -354.96342446841834, 253.8124176863926 -347.6671515981231, 259.2325061043262 -364.55281166937783, 295.1114847359752 -387.11036981714614, 275.671874385812 -406.5499801673093, 262.1510152524443 -428.34308304967357, 233.79978352786844 -427.3007583539171, 185.9066148277057 -410.5522528864605, 165.89525123194954 -437.4246554293331, 167.0387577231356 -475.73212288406637, 125.30077079484415 -496.8869929710086 )"
-	//wkt := "LINESTRING ( 439.2018415552474 -535.605758361686, 492.23356771259296 -471.9676869728713, 528.4795996775263 -467.1657594058827, 559.7572907192878 -449.52193369001725, 580.6090847471287 -467.9677514838766, 617.9017163738444 -475.58667622481846, 527.2766115605355 -534.5330939573689, 528.8805957165232 -614.7323017567574, 529.2815917555201 -664.0548145533812, 558.9151990373942 -661.7290375271989, 562.2354462402891 -543.0302000237143, 600 -500, 700 -500, 731.9369699437949 -526.0600476533638, 709.6636449577098 -578.0311392875624, 532.1687632362982 -579.645148344525, 604.1074526323496 -545.5203854258853, 607.4758193599239 -594.2815037679134, 625.5206411147863 -548.5679553222619, 655.7557424551557 -606.391584145621, 692.0859835882786 -599.8954483138705, 671.4346875799362 -539.9866400877274, 633.941557933722 -615.9352898737482, 631.7761793231385 -651.5838377405763, 477.38468438853624 -638.4873071069363, 451.92945583301037 -669.2457082781968 )"
-	//wkt := "LINESTRING ( 578.3028099257476 -411.09257045101356, 619.7944787857764 -377.80804488197947, 687.7313871390104 -393.7663790589136, 706.8813881513314 -441.6413815897161, 674.5087673924079 -467.17471627281077, 675.8766246075736 -400.1497127296873, 679.0682914429605 -366.40923475559794, 782.1135349854496 -390.1187598184715, 643.0480514435948 -440.27352437455033, 590.6135248622397 -484.04495525985544, 588.3337628369634 -453.4961441211529, 634.8409081526 -424.77114260267143, 662.1980524559158 -467.630668677866 )"
-	//wkt := "LINESTRING ( 624.8694272942178 -418.6983852078049, 628.6690306696782 -426.90552849879964, 635.0523643404518 -430.0971953341865, 650.4027619773124 -415.5067183724181, 655.7222067029571 -425.9936236886891, 647.363079276944 -432.83290976451804, 639.6118883910045 -431.1610842793154, 635.2043484754703 -425.0817188785786, 633.2285547202308 -411.40314672692074, 638.8519677159125 -405.6277495962207, 659.0658576733623 -406.08370200127604, 667.4249850993755 -420.67417896304437, 658.913873538344 -433.2888621695733, 642.8035552263914 -424.77775060854174, 625.6293479693098 -409.27536883666284 )"
-	//wkt := "LINESTRING ( 632.8484507303832 -422.87004804422736, 632.9633725716069 -417.52618242732257, 638.7669255534067 -413.4464570638791, 645.2600095825491 -411.78009036613463, 653.1896166269885 -411.8375512867465, 656.0626626575825 -415.40012836468304, 654.5686787216736 -418.4455571571126, 648.9949694223212 -419.0201663632314, 646.696532597846 -415.68743296774244, 647.4435245658005 -411.5502466836871, 649.8568832314994 -410.05626274777825, 654.9709051659567 -410.57341103328514, 661.1192236714278 -412.6420041753128, 663.5900432577386 -414.5956754761167, 664.6243398287525 -419.9970020136334, 662.2684420836654 -425.16848486870254, 657.3842638316556 -425.39832855115003, 657.3842638316556 -420.5716112197522, 662.1535202424416 -418.1582525540532, 666.4630892883325 -417.9284088716057, 669.3935962395384 -420.5716112197522, 669.7958226838216 -424.59387566258374, 666.8078548120038 -429.24821023214594, 662.2684420836654 -430.85711600927857, 654.1089913567785 -430.0526631207122, 650.1441878345588 -425.8580159160451, 647.1562199627411 -426.0303986778807, 646.8114544390698 -428.61614010541524, 650.6613361200657 -431.5466470566211, 655.6029752926873 -432.23617810396365, 657.0969592285962 -429.6504366764291, 656.0626626575825 -426.66246880461136, 651.5232499292439 -423.61704001218175, 646.5816107566224 -423.09989172667485, 643.0190336786858 -424.7087975038075, 643.0764945992977 -427.86914813746085, 644.1682520909234 -429.9952022001004 )"
-	//wkt := "LINESTRING ( 648.1631601389414 -406.62426353001473, 653.4495648352342 -402.5933799490914, 662.37425977772 -403.4182145984038, 666.5994965172629 -411.71242805019665, 659.9914906468968 -414.4877905157504, 658.1412490031943 -410.65514711093806, 658.8681296489345 -406.09562306038544, 662.37425977772 -403.4182145984038 )"
-	wkt := "LINESTRING ( 647.6773745814958 -404.4620757087468, 666.1820720758611 -404.49655226111395, 664.5616741146061 -402.1521467001493, 663.4929009912252 -406.5996219555087, 661.3208781920962 -401.3936625480725, 659.2867616024356 -407.90973094545956, 657.4250277746107 -402.4969122238205, 655.046145661279 -407.0822936886485, 653.9084194331637 -402.7382480903904, 650.8055297201222 -406.2893329842046, 651.0468655866921 -404.4620757087468, 646.0132889410914 -404.4620757087468 )"
-	coordinates := geom.NewLineStringFromWKT(wkt).Coordinates()
-	loops := SimpleLoops(coordinates)
-	for _, g := range loops {
-		fmt.Println(g.WKT())
+//Homotopy Relate
+func HomotopySimpleLoops(coordinates []*geom.Point, contexts *ctx.ContextGeometries) bool {
+	var bln = true
+	var n = len(coordinates) - 1
+	var g *ctx.ContextGeometry
+	var linestring = geom.NewLineString(coordinates)
+	var geometries = contexts.DataView()
+	var segment = geom.NewSegment(coordinates[0], coordinates[n])
+	var backLoops []*geom.Polygon
+	var forwardLoops = SimpleLoops(coordinates, false)
+
+	for idx, n := 0, contexts.Len(); bln && idx < n; idx++ {
+		g = geometries[idx]
+		if segment.Intersects(g.Geom) && linestring.Intersects(g.Geom) {
+			continue //bln = true : continue
+		}
+
+		bln = disjointLoopRelate(g, forwardLoops)
+		if !bln {
+			if len(backLoops) == 0 {
+				backLoops = SimpleLoops(coordinates, true)
+			}
+			bln = disjointLoopRelate(g, backLoops)
+		}
 	}
-	fmt.Println("--------------------------------------------------")
-	fmt.Println(geom.NewPolygon(coordinates).WKT())
+	return bln
 }
 
-func SimpleLoops(coordinates []*geom.Point) []*geom.Polygon {
+func disjointLoopRelate(g *ctx.ContextGeometry, loops []*geom.Polygon) bool {
+	var bln = true
+	for i, n := 0, len(loops); bln && i < n; i++ {
+		bln = !loops[i].Intersects(g.Geom)
+	}
+	return bln
+}
+
+func SimpleLoops(coordinates []*geom.Point, reverse bool) []*geom.Polygon {
 	var s *seg.Seg
 	var neighbours []*seg.Seg
 	var db = rtree.NewRTree(8)
-	var segments = LineSegments(coordinates)
+
+	coordinates = makeRing(coordinates)
+	if reverse {
+		reverseCoordinates(coordinates)
+	}
+
+	var segments = lineSegments(coordinates)
 
 	var iterator = segments[:]
 	var loops []*geom.Polygon
@@ -38,6 +63,8 @@ func SimpleLoops(coordinates []*geom.Point) []*geom.Polygon {
 	for len(iterator) > 0 {
 		s = iterator[0]
 		iterator = iterator[1:]
+
+		fmt.Println(s.WKT())
 
 		neighbours = searchIntersects(db, s)
 		db.Insert(s)
@@ -47,12 +74,16 @@ func SimpleLoops(coordinates []*geom.Point) []*geom.Polygon {
 				continue
 			}
 			var intersects = s.Segment.Intersection(o.Segment)
-
 			if len(intersects) == 0 {
 				continue
 			}
 
 			pt := intersects[0]
+
+			if (o.I == 0 && o.J == 1) && coordinates[len(coordinates)-1].Equals2D(pt) {
+				continue
+			}
+
 			//coordinates of loop
 			lp := append([]*geom.Point{pt}, coordinates[o.J: s.J]...)
 			if len(lp) > 2 {
@@ -63,7 +94,7 @@ func SimpleLoops(coordinates []*geom.Point) []*geom.Polygon {
 
 			var oa, sb = subSegments(coordinates[o.I], pt, coordinates[s.J], o.I)
 			//new coordinates
-			coordinates = append(coordinates[:o.I:o.I], oa.A, oa.B, sb.B)
+			coordinates = append(coordinates[:o.I], oa.A, oa.B, sb.B)
 			//new segments
 			iterator = []*seg.Seg{oa, sb}
 			coordinates, segments, iterator = updateChain(
@@ -79,7 +110,12 @@ func SimpleLoops(coordinates []*geom.Point) []*geom.Polygon {
 	return loops
 }
 
-type Segments []*seg.Seg
+type SegKnn struct {
+	*seg.Seg
+	Offset float64
+}
+
+type Segments []*SegKnn
 
 func (s Segments) Len() int {
 	return len(s)
@@ -88,14 +124,38 @@ func (s Segments) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 func (s Segments) Less(i, j int) bool {
-	return s[i].I < s[j].I
+	return s[i].Offset < s[j].Offset
 }
 
-func LineSegments(coordinates []*geom.Point) []*seg.Seg {
-	var i, j int
+func makeRing(coordinates []*geom.Point) []*geom.Point {
 	var n = len(coordinates)
-	var segments = make([]*seg.Seg, 0)
-	for i = 0; i < n-1; i++ {
+	var coords = make([]*geom.Point, n, n+1)
+	copy(coords, coordinates)
+	if n > 1 && !isRing(coords) {
+		coords = append(coords, coords[0].Clone())
+	}
+	return coords
+}
+
+func reverseCoordinates(coordinates []*geom.Point) []*geom.Point {
+	for i, j := 0, len(coordinates)-1; i < j; i, j = i+1, j-1 {
+		coordinates[i], coordinates[j] = coordinates[j], coordinates[i]
+	}
+	return coordinates
+}
+
+//ring : P0 == Pn
+func isRing(coordinates []*geom.Point) bool {
+	if len(coordinates) < 2 {
+		return false
+	}
+	return coordinates[0].Equals2D(coordinates[len(coordinates)-1])
+}
+
+func lineSegments(coordinates []*geom.Point) []*seg.Seg {
+	var i, j int
+	var segments = make([]*seg.Seg, 0, len(coordinates)-1)
+	for i = 0; i < len(coordinates)-1; i++ {
 		j = i + 1
 		segments = append(segments, seg.NewSeg(coordinates[i], coordinates[j], i, j))
 	}
@@ -103,17 +163,22 @@ func LineSegments(coordinates []*geom.Point) []*seg.Seg {
 }
 
 func searchIntersects(db *rtree.RTree, segment *seg.Seg) []*seg.Seg {
-	var neighbours []*seg.Seg
+	var neighbours []*SegKnn
+	var ptA = segment.A
 	for _, n := range db.Search(segment.BBox()) {
 		s := n.GetItem().(*seg.Seg)
 		if s.Intersects(segment.Segment) {
-			neighbours = append(neighbours, s)
+			neighbours = append(neighbours, &SegKnn{Seg: s, Offset: s.Distance(ptA)})
 		}
 	}
 	if len(neighbours) > 0 {
-		sort.Sort(sort.Reverse(Segments(neighbours)))
+		sort.Sort(Segments(neighbours))
 	}
-	return neighbours
+	var knn = make([]*seg.Seg, 0, len(neighbours))
+	for _, s := range neighbours {
+		knn = append(knn, s.Seg)
+	}
+	return knn
 }
 
 func rmSegments(db *rtree.RTree, segments []*seg.Seg, i, j int) {
@@ -144,4 +209,12 @@ func subSegments(a, pt, b *geom.Point, i int) (*seg.Seg, *seg.Seg) {
 	var oa = seg.NewSeg(a, pt, i, i+1)
 	var sb = seg.NewSeg(pt, b, oa.J, oa.J+1)
 	return oa, sb
+}
+
+func Print_Segs(segs []*seg.Seg) {
+	fmt.Println("------------------------------------------------------")
+	for _, s := range segs {
+		fmt.Println(s.WKT())
+	}
+	fmt.Println("------------------------------------------------------")
 }
