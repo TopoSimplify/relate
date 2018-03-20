@@ -2,11 +2,10 @@ package relate
 
 import (
 	"sort"
+	"simplex/ctx"
 	"simplex/seg"
 	"github.com/intdxdt/geom"
 	"github.com/intdxdt/rtree"
-	"simplex/ctx"
-	"fmt"
 )
 
 //Homotopy Relate
@@ -63,8 +62,6 @@ func SimpleLoops(coordinates []*geom.Point, reverse bool) []*geom.Polygon {
 	for len(iterator) > 0 {
 		s = iterator[0]
 		iterator = iterator[1:]
-
-		fmt.Println(s.WKT())
 
 		neighbours = searchIntersects(db, s)
 		db.Insert(s)
@@ -209,12 +206,4 @@ func subSegments(a, pt, b *geom.Point, i int) (*seg.Seg, *seg.Seg) {
 	var oa = seg.NewSeg(a, pt, i, i+1)
 	var sb = seg.NewSeg(pt, b, oa.J, oa.J+1)
 	return oa, sb
-}
-
-func Print_Segs(segs []*seg.Seg) {
-	fmt.Println("------------------------------------------------------")
-	for _, s := range segs {
-		fmt.Println(s.WKT())
-	}
-	fmt.Println("------------------------------------------------------")
 }
