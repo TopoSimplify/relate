@@ -6,6 +6,7 @@ import (
 	"simplex/seg"
 	"github.com/intdxdt/geom"
 	"github.com/intdxdt/rtree"
+	"fmt"
 )
 
 //Homotopy Relate
@@ -55,13 +56,17 @@ func SimpleLoops(coordinates []*geom.Point, reverse bool) []*geom.Polygon {
 	}
 
 	var segments = lineSegments(coordinates)
-
 	var iterator = segments[:]
 	var loops []*geom.Polygon
 
+	fmt.Println("# segments : ", len(segments))
+	var NSegs = 0
 	for len(iterator) > 0 {
+		NSegs += 1
 		s = iterator[0]
 		iterator = iterator[1:]
+
+		fmt.Println(s.WKT())
 
 		neighbours = searchIntersects(db, s)
 		db.Insert(s)
@@ -77,7 +82,7 @@ func SimpleLoops(coordinates []*geom.Point, reverse bool) []*geom.Polygon {
 
 			pt := intersects[0]
 
-			if (o.I == 0 && o.J == 1) && coordinates[len(coordinates)-1].Equals2D(pt) {
+			if len(iterator) == 0 && coordinates[len(coordinates)-1].Equals2D(pt) {
 				continue
 			}
 
@@ -89,14 +94,33 @@ func SimpleLoops(coordinates []*geom.Point, reverse bool) []*geom.Polygon {
 
 			rmSegments(db, segments, o.I, s.J)
 
-			var oa, sb = subSegments(coordinates[o.I], pt, coordinates[s.J], o.I)
-			//new coordinates
-			coordinates = append(coordinates[:o.I], oa.A, oa.B, sb.B)
-			//new segments
-			iterator = []*seg.Seg{oa, sb}
-			coordinates, segments, iterator = updateChain(
-				coordinates, segments, iterator, o.I, s.J,
-			)
+			var oa = seg.NewSeg(coordinates[o.I], pt, o.I+0, o.I+1)
+			var sb = seg.NewSeg(pt, coordinates[s.J], o.I+1, o.I+2)
+			var dimA, dimB = !oa.A.Equals2D(oa.B), !sb.A.Equals2D(sb.B)
+
+			//new coordinates and segments
+			coordinates = coordinates[:o.I]
+			if !dimA && !dimB {
+				coordinates = append(coordinates, oa.A)
+				iterator = iterator[:0]
+			} else if !dimA && dimB {
+				coordinates = append(coordinates, sb.A, sb.B)
+				iterator = []*seg.Seg{sb}
+			} else if dimA && !dimB {
+				coordinates = append(coordinates, oa.A, oa.B)
+				iterator = []*seg.Seg{oa}
+			} else {
+				coordinates = append(coordinates, oa.A, oa.B, sb.B)
+				iterator = []*seg.Seg{oa, sb}
+			}
+			//coordinates, segments, iterator = updateChain(coordinates, segments, iterator, o.I, s.J, sb.J)
+			var index = len(coordinates) - 1
+			for _, ss := range segments[s.J:] {
+				ss.I, ss.J, index = index, index+1, index+1
+				iterator = append(iterator, ss)
+				coordinates = append(coordinates, ss.B)
+			}
+			segments = append(segments[:o.I:o.I], iterator...)
 			break
 		}
 	}
@@ -104,6 +128,8 @@ func SimpleLoops(coordinates []*geom.Point, reverse bool) []*geom.Polygon {
 	if len(coordinates) > 2 {
 		loops = append(loops, geom.NewPolygon(coordinates))
 	}
+
+	fmt.Println("# -runs- segments : ", NSegs)
 	return loops
 }
 
@@ -185,14 +211,11 @@ func rmSegments(db *rtree.RTree, segments []*seg.Seg, i, j int) {
 }
 
 func updateChain(
-	coordinates []*geom.Point,
-	segments,
-	iterator []*seg.Seg,
-	startIndex,
-	restIndex int,
+	coordinates []*geom.Point, segments, iterator []*seg.Seg,
+	startIndex, restIndex int, index int,
 ) ([]*geom.Point, []*seg.Seg, []*seg.Seg) {
 
-	var j = iterator[len(iterator)-1].J
+	var j = index
 	for _, ss := range segments[restIndex:] {
 		ss.I, ss.J, j = j, j+1, j+1
 		iterator = append(iterator, ss)
