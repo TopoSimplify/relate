@@ -19,7 +19,7 @@ func QuadRelate(polyline *pln.Polyline, contexts *ctx.ContextGeometries) []strin
 	var g *ctx.ContextGeometry
 
 	for _, s := range polyline.Segments() {
-		objs = append(objs, ctx.New(s, s.I, s.J).AsSelfSegment())
+		objs = append(objs, ctx.New(s, s.I, s.J).AsPlanarSegment())
 	}
 	segdb.Load(objs)
 
@@ -80,7 +80,7 @@ func QuadRelate(polyline *pln.Polyline, contexts *ctx.ContextGeometries) []strin
 	return quadRelations
 }
 
-//find if intersects segment
+//find if intersects simple
 func intersectsQuad(q geom.Geometry, res []*rtree.Node) bool {
 	var bln = false
 	for _, node := range res {

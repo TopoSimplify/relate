@@ -34,6 +34,7 @@ func HomotopyPlanarLoops(coordinates []*geom.Point, contexts *ctx.ContextGeometr
 			bln = disjointLoopRelate(g, backLoops)
 		}
 	}
+
 	return bln
 }
 
