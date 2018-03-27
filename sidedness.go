@@ -1,13 +1,13 @@
 package relate
 
 import (
+	"fmt"
+	"math"
+	"strings"
 	"simplex/side"
 	"simplex/ctx"
-	"github.com/intdxdt/geom"
-	"fmt"
-	"strings"
 	"github.com/intdxdt/mbr"
-	"math"
+	"github.com/intdxdt/geom"
 	"github.com/intdxdt/vect"
 	"github.com/intdxdt/cart"
 )
@@ -29,7 +29,7 @@ func Homotopy(coordinates []*geom.Point, contexts *ctx.ContextGeometries) bool {
 	printHomo(homo)
 
 	bln = disjointContextRelate(homo, geometries)
-	if !bln {
+	if !bln && homo.a != nil && homo.b != nil {
 		homo = boundedRegions(coordinates, true)
 		printHomo(homo)
 
