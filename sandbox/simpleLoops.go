@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/intdxdt/geom"
-	"simplex/side"
+	"simplex/relate/homotopy"
 )
 
 func main() {
@@ -30,118 +30,13 @@ func main() {
 	var wkt = "LINESTRING ( 1636.5675019621372 701.8202680514876, 1700 600, 1747.099108459969 524.9696976549563, 1919.2126100065934 517.0745829051111, 2083.4309968033726 491.8102157056067, 2222.385016400647 532.8648124048015, 2302.9151868490676 668.660786102138, 2312.3893245488816 772.876300800094, 2310.8103015989127 836.0372187988552, 2223.964039350616 878.6708384480189, 2148.170937752103 840.7742876487622, 2148.170937752103 783.9294614498772, 2149.747502910075 701.7082620480319, 2179.7513967514833 641.8173959526645, 2145.0128918521646 578.6564779539033, 2094.4841574531556 583.3935468038104, 2017.1120329046732 614.974005803191, 1995.0057116051069 750.7699795005275, 1931.8447936063458 847.0903794486384, 1838.682439558173 873.9337695981118, 1797.627842858978 854.9854941984835, 1762.8893379596595 783.9294614498772, 1766.0473838595976 725.5056123010231, 1781.8376133592878 684.4510156018283, 1854.4726690578632 603.9208451534078, 1884.4741051072747 629.1852123529122, 1833.9453707082657 720.768543451116, 1840.261462508142 788.6665302997842, 1878.1580133073987 779.19239259997, 1913.9024098461164 764.03140041602, 1931.8447936063458 717.6104975511779, 1939.7399083561909 652.8705566024477, 1961.8462296557573 594.4467074535936, 1952.372091955943 551.8130878044299, 1876.5789903574296 542.3389501046156, 1800 600, 1699.7284199608982 766.5602090002178, 1770.7844527095046 946.5688252966872, 2015.5330099547043 948.1478482466562, 2397.6565638472093 881.828884347957, 2404.2598790456095 701.6527125059058 )"
 	var coordinates = geom.NewLineStringFromWKT(wkt).Coordinates()
 	//coordinates = reverseCoordinates(coordinates)
-	var n = len(coordinates) - 1
-	var simple = geom.NewSegment(coordinates[0], coordinates[n])
+
 	var poly = geom.NewPolygon(coordinates)
 	fmt.Println(poly.WKT())
-	var intersections = homoSplit(simple, coordinates)
+	var intersections = homotopy.SimpleDeformation( coordinates)
 
-	var o = selectInters(simple, intersections)
-	fmt.Println(o.pt.WKT(), "i , j :", o.i, o.j)
-}
-
-type inters struct {
-	pt *geom.Point
-	i  int
-	j  int
-}
-
-const (
-	ToBegin = "2B"
-	ToEnd   = "2E"
-)
-
-func selectInters(segment *geom.Segment, intersections []*inters) *inters {
-	var a, b = segment.A, segment.B
-	var toB, toE float64
-	var curDir, prevDir = "-", "-"
-	var switchInt *inters
-
-	for idx, n := 0, len(intersections); idx < n; idx++ {
-		var o = intersections[idx]
-		fmt.Println(o.pt.WKT(), o.i, o.j)
-		if idx == 0 {
-			curDir = ToEnd
-		} else {
-
-			//going to a
-			if a.Magnitude(o.pt) < toB {
-				curDir = ToBegin
-			} else if b.Magnitude(o.pt) < toE {
-				curDir = ToEnd
-			} else { //dit not move
-			}
-
-			if idx > 1 && curDir != prevDir {
-				prev := intersections[idx-2].pt
-				at := intersections[idx-1].pt
-				next := intersections[idx].pt
-
-				fmt.Println("prev :", prev.WKT())
-				fmt.Println("at :", at.WKT())
-				fmt.Println("next :", next.WKT())
-
-				var dprev = at.Magnitude(prev)
-				var dnext = at.Magnitude(next)
-				var index = 0
-				if dprev < dnext {
-					index = -2
-				} else if dprev > dnext {
-					index = -1
-				} else {
-					panic("unknown state")
-				}
-				switchInt = intersections[idx+index]
-				break
-			}
-		}
-		toB, toE = a.Magnitude(o.pt), b.Magnitude(o.pt)
-		prevDir = curDir
+	for _, o := range intersections {
+		fmt.Println(o.pt.WKT())
 	}
-	if switchInt == nil {
-		idx := len(intersections) - 1
-		if idx > 0 {
-			switchInt = intersections[idx-1]
-		} else if idx == 0 {
-			switchInt = intersections[idx]
-		}
-	}
-	return switchInt
 }
 
-func homoSplit(segment *geom.Segment, coordinates []*geom.Point) []*inters {
-	var curSide, prevSide *side.Side
-	var ln *geom.Segment
-	var c *geom.Point
-	var intersections []*inters
-	var i, j = -1, -1
-
-	for idx, n := 1, len(coordinates)-1; idx < n; idx++ {
-		c = coordinates[idx]
-		curSide = segment.SideOf(c)
-		if (prevSide != nil) && !(curSide.IsSameSide(prevSide)) {
-			ln = geom.NewSegment(coordinates[idx-1], coordinates[idx])
-			if segment.Intersects(ln) {
-				pt := segment.Intersection(ln)
-				i, j = idx-1, idx
-				intersections = append(intersections, &inters{pt: pt[0], i: i, j: j})
-			}
-		}
-		prevSide = curSide
-	}
-	return intersections
-}
-
-func cloneCoordinates(coordinates []*geom.Point) []*geom.Point {
-	var n = len(coordinates)
-	var clone = make([]*geom.Point, n, n)
-	copy(clone, coordinates)
-	return clone
-}
-
-func reverseCoordinates(coordinates []*geom.Point) []*geom.Point {
-	for i, j := 0, len(coordinates)-1; i < j; i, j = i+1, j-1 {
-		coordinates[i], coordinates[j] = coordinates[j], coordinates[i]
-	}
-	return coordinates
-}
