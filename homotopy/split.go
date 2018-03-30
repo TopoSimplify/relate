@@ -27,5 +27,6 @@ func intersectTokens(segment *geom.Segment, coordinates []*geom.Point) []*Inter 
 		}
 		prevSide = curSide
 	}
+
 	return intersections
 }

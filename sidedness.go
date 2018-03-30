@@ -39,7 +39,7 @@ func Homotopy(coordinates []*geom.Point, contexts *ctx.ContextGeometries) bool {
 }
 
 func diagonal(box *mbr.MBR) float64 {
-	return math.Hypot(box.Height(), box.Width())
+	return math.Hypot(box.Width(), box.Height())
 }
 
 func extendEndPoints(a, b *geom.Point, box *mbr.MBR) (*geom.Point, *geom.Point) {
@@ -97,7 +97,7 @@ func boundedRegions(coordinates []*geom.Point, reverse bool) *homoFragments {
 
 	var linestring = geom.NewLineString(coordinates)
 	var ptA, ptB = extendEndPoints(coordinates[0], coordinates[n-1], linestring.BBox())
-	var simple = geom.NewSegment(ptA, ptB )
+	var simple = geom.NewSegment(ptA, ptB)
 	fmt.Println(simple.WKT())
 
 	var i, j = homoSplit(simple, coordinates)
