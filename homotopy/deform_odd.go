@@ -8,7 +8,7 @@ func oddBoundedFaces(coordinates []*geom.Point, intersect *Inter) []*geom.Polygo
 	var a, b []*geom.Point
 	var ga, gb *geom.Polygon
 
-	var pt = intersect.Point
+	var pt = intersect.Intr.Point
 	var i, j = intersect.I, intersect.J
 
 	a = append([]*geom.Point{}, coordinates[:i+1]...)

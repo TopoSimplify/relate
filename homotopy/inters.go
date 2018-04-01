@@ -7,9 +7,9 @@ import (
 )
 
 type Inter struct {
-	Point *geom.Point
-	I     int
-	J     int
+	Intr *geom.InterPoint
+	I    int
+	J    int
 }
 
 type Intersects struct {
@@ -76,7 +76,7 @@ func (o *Intersects) Less(i, j int) bool {
 	var a, b = o.Intersects[i], o.Intersects[j]
 	if o.IsEven() {
 		var origin = o.Simple.A
-		return origin.Magnitude(a.Point) < origin.Magnitude(b.Point)
+		return origin.Magnitude(a.Intr.Point) < origin.Magnitude(b.Intr.Point)
 	}
 	return a.I < b.I
 }

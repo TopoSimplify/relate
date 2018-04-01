@@ -38,15 +38,15 @@ func round(f float64) float64{
 
 func extendEndPoints(a, b *geom.Point, box *mbr.MBR) (*geom.Point, *geom.Point) {
 	var diag = diagonal(box)
-	v := vect.NewVector(a, b)
-	m := v.Magnitude() + diag
-	ux, uy := cart.Extend(v, m, math.Pi, true)
+	var v = vect.NewVector(a, b)
+	var m = v.Magnitude() + diag
+	var ux, uy = cart.Extend(v, m, math.Pi, true)
 	ux, uy = round(ux), round(uy)
-	up := a.Add(cart.NewCoord(ux, uy))
+	up := a.Add(ux, uy)
 
 	lx, ly := cart.Extend(v, diag, math.Pi, false)
 	lx, ly = round(lx), round(ly)
-	lp := a.Add(cart.NewCoord(lx, ly))
+	lp := a.Add(lx, ly)
 	return geom.NewPointXY(lp[0], lp[1]), geom.NewPointXY(up[0], up[1])
 }
 

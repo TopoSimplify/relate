@@ -17,12 +17,16 @@ func intersectTokens(segment *geom.Segment, coordinates []*geom.Point) []*Inter 
 		curSide = segment.SideOf(c)
 		if (prevSide != nil) && !(curSide.IsSameSide(prevSide)) {
 			ln = geom.NewSegment(coordinates[i], coordinates[j])
-			if segment.Intersects(ln) {
-				pt := segment.Intersection(ln)
-				intersections = append(
-					intersections, &Inter{
-						Point: pt[0], I: i, J: j, //sort pnts and pick first
-					})
+			if segment.SegSegIntersects(ln) {
+				var pt = segment.SegSegIntersection(ln)
+				var sideGroup = (curSide.IsLeft() && prevSide.IsOn()) ||
+					(curSide.IsOn() && prevSide.IsLeft())
+				if !sideGroup {
+					intersections = append(
+						intersections, &Inter{
+							Intr: pt[0], I: i, J: j, //sort pnts and pick first
+						})
+				}
 			}
 		}
 		prevSide = curSide

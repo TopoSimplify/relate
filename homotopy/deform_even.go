@@ -9,10 +9,10 @@ func evenBoundedFaces(coordinates []*geom.Point, intersects *Intersects) []*geom
 	var ptr = 0
 	for _, idx := range indices {
 		ra, rb := idx.a, idx.b
-		pa := boundedPolygon(nil, coordinates[ptr:ra.J], ra.Point)
-		pb := boundedPolygon(ra.Point, coordinates[ra.J:rb.J], rb.Point)
+		pa := boundedPolygon(nil, coordinates[ptr:ra.J], ra.Intr.Point)
+		pb := boundedPolygon(ra.Intr.Point, coordinates[ra.J:rb.J], rb.Intr.Point)
 		//change ptr origin
-		coordinates[rb.I] = rb.Point
+		coordinates[rb.I] = rb.Intr.Point
 		ptr = rb.I
 		simpleBounds = append(simpleBounds, pa, pb)
 	}
