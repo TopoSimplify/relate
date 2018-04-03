@@ -20,7 +20,6 @@ func isRing(coordinates []*geom.Point) bool {
 	return coordinates[0].Equals2D(coordinates[len(coordinates)-1])
 }
 
-
 func lineSegments(coordinates []*geom.Point) []*seg.Seg {
 	var i, j int
 	var segments = make([]*seg.Seg, 0, len(coordinates)-1)

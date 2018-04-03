@@ -62,3 +62,12 @@ func boundingBox(coordinates []*geom.Point) *mbr.MBR {
 	}
 	return box
 }
+
+
+func isSamePoint(coordinates []*geom.Point) bool {
+	var bln = len(coordinates) > 1
+	for i := 0; bln && i < len(coordinates)-1; i++ {
+		bln = coordinates[i].Equals2D(coordinates[i+1])
+	}
+	return  bln
+}

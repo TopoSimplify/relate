@@ -14,34 +14,32 @@ type Inter struct {
 
 type Intersects struct {
 	Simple     *geom.Segment
+	ExtSimple  *geom.Segment
 	Intersects []*Inter
 	Indices    IntPairs
 }
 
 func NewIntersects(coordinates []*geom.Point) *Intersects {
+	var simple, extSimple = simpleSegs(coordinates)
+	var tokens = intersectTokens(extSimple, coordinates)
+	fmt.Println(extSimple.WKT())
+	var intersects = &Intersects{
+		Simple:     simple,
+		ExtSimple:  extSimple,
+		Intersects: tokens,
+	}
+	sort.Sort(intersects)
+	return intersects
+}
+
+func simpleSegs(coordinates []*geom.Point) (*geom.Segment, *geom.Segment) {
 	var n = len(coordinates) - 1
 	var a, b = coordinates[0], coordinates[n]
 	var simple = geom.NewSegment(a, b)
-	fmt.Println(simple.WKT())
-
-	var tokens = intersectTokens(simple, coordinates)
-	if len(tokens)%2 == 0 {
-		var bounds = boundingBox(coordinates)
-		var ax, bx = extendEndPoints(a, b, bounds)
-		var extSimple = geom.NewSegment(ax, bx)
-		var extTokens = intersectTokens(extSimple, coordinates)
-		if len(extTokens)%2 == 1 { //if odd after ext - make tokens odd
-			tokens = extTokens
-		}
-	}
-
-	var intersects = &Intersects{
-		Simple:     simple,
-		Intersects: tokens,
-	}
-
-	sort.Sort(intersects)
-	return intersects
+	var bounds = boundingBox(coordinates)
+	var ax, bx = extendEndPoints(a, b, bounds)
+	var extSimple = geom.NewSegment(ax, bx)
+	return simple, extSimple
 }
 
 func (o *Intersects) evenAggregate() {

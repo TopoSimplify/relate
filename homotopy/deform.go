@@ -32,13 +32,17 @@ func boundedPolygon(a *geom.Point, coordinates []*geom.Point, b *geom.Point) *ge
 	if a != nil {
 		bounded = append(bounded, a)
 	}
+
 	bounded = append(bounded, coordinates...)
 	if b != nil {
 		bounded = append(bounded, b)
 	}
-	if len(bounded) == 2 && bounded[0].Equals2D(bounded[0]) {
+
+	if len(bounded) < 4 && isSamePoint(bounded) {
 		//plotting program will not plot ring of same point < 4 vertices
-		bounded = append(bounded, bounded[0], bounded[0])
+		for len(bounded) < 4 {
+			bounded = append(bounded, bounded[0])
+		}
 	}
 	return geom.NewPolygon(bounded)
 }
