@@ -2,14 +2,15 @@ package homotopy
 
 import (
 	"sort"
-	"github.com/intdxdt/geom"
 	"fmt"
+	"github.com/intdxdt/geom"
 )
 
 type Inter struct {
 	Intr *geom.InterPoint
 	I    int
 	J    int
+	S    int
 }
 
 type Intersects struct {
@@ -20,9 +21,12 @@ type Intersects struct {
 }
 
 func NewIntersects(coordinates []*geom.Point) *Intersects {
-	var simple, extSimple = simpleSegs(coordinates)
-	var tokens = intersectTokens(extSimple, coordinates)
+	var simple, extSimple = SimpleSegs(coordinates)
+	var tokens = IntersectTokens(extSimple, coordinates)
+	updateInterBySidedness(simple, tokens)
+
 	fmt.Println(extSimple.WKT())
+
 	var intersects = &Intersects{
 		Simple:     simple,
 		ExtSimple:  extSimple,
@@ -32,7 +36,7 @@ func NewIntersects(coordinates []*geom.Point) *Intersects {
 	return intersects
 }
 
-func simpleSegs(coordinates []*geom.Point) (*geom.Segment, *geom.Segment) {
+func SimpleSegs(coordinates []*geom.Point) (*geom.Segment, *geom.Segment) {
 	var n = len(coordinates) - 1
 	var a, b = coordinates[0], coordinates[n]
 	var simple = geom.NewSegment(a, b)
