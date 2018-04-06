@@ -17,7 +17,6 @@ func QuadRelate(polyline *pln.Polyline, contexts *ctx.ContextGeometries) []strin
 	var segdb = rtree.NewRTree(8)
 	var objs = make([]rtree.BoxObj, 0)
 	var g *ctx.ContextGeometry
-
 	for _, s := range polyline.Segments() {
 		objs = append(objs, ctx.New(s, s.I, s.J).AsPlanarSegment())
 	}

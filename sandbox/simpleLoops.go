@@ -39,7 +39,7 @@ func main() {
 
 	var poly = geom.NewPolygon(coordinates)
 	fmt.Println(poly.WKT())
-	var intersections = homotopy.SimpleBounds( coordinates)
+	var intersections = homotopy.chainDeformation( coordinates)
 
 	for _, o := range intersections.Intersects {
 		fmt.Println(o.Point.WKT())

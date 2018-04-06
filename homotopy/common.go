@@ -10,13 +10,6 @@ import (
 
 const precision = 12
 
-func asIndices(vals []*Inter) [][2]int {
-	var tokens = make([][2]int, len(vals))
-	for i, o := range vals {
-		tokens[i] = [2]int{o.I, o.J}
-	}
-	return tokens
-}
 
 func cloneCoordinates(coordinates []*geom.Point) []*geom.Point {
 	var n = len(coordinates)
