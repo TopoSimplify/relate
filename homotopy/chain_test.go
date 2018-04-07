@@ -8,6 +8,23 @@ import (
 	"github.com/intdxdt/geom"
 )
 
+
+func reverse(coordinates []*geom.Point) []*geom.Point {
+	for i, j := 0, len(coordinates)-1; i < j; i, j = i+1, j-1 {
+		coordinates[i], coordinates[j] = coordinates[j], coordinates[i]
+	}
+	return coordinates
+}
+
+
+func contextGeoms(wkts []string) *ctx.ContextGeometries {
+	var contexts = ctx.NewContexts()
+	for _, wkt := range wkts {
+		contexts.Push(ctx.New(geom.ReadGeometry(wkt), 0, -1))
+	}
+	return contexts
+}
+
 func TestChain(t *testing.T) {
 	g := goblin.Goblin(t)
 	g.Describe("chain", func() {
@@ -34,74 +51,5 @@ func TestChain(t *testing.T) {
 			g.Assert(indices).Equal(expect)
 		})
 
-		g.It("should test chain deformation - case 1", func() {
-			g.Timeout(1 * time.Hour)
-			var contextWkts = []string{
-				"POINT ( 558.8093849954861 63.948006631233056 )",
-				"POINT ( 860.6976575984221 -35.93367827534772 )",
-				"POINT ( 1258.198878194574 37.076749997414886 )",
-				"POINT ( 1313.3623128895501 -29.443862428879928 )",
-			}
-			var contexts = ctx.NewContexts()
-			for _, c := range contextWkts {
-				contexts.Push(ctx.New(geom.NewPointFromWKT(c), 0, -1))
-			}
-			var wkt = "LINESTRING ( 600 0, 600 100, 500 100, 500 -100, 400 100, 600 200, 900 300, 1200 200, 1400 100, 1400 1.7158013051015217, 1400 -100, 1336.2430712729156 -100, 1332.8103356508254 97.83239872362749, 1200 100, 1200 -100, 1236.6937382322994 -87.53532486924402, 1226.3955313660288 72.08688155795089, 1291.6175081857427 66.93777812481557, 1278.0572495001297 -101.81210774059059, 1000 -300, 739.3977399886022 -182.83688839549262, 739.3977399886022 117.16311160450738, 839.3977399886022 117.16311160450738, 841.9291416919249 -102.98263516864998, 883.251804604375 -40.347537079926326, 884.4792054022216 117.8277156849893, 939.3977399886022 117.16311160450738, 939.762106921496 -102.98263516864998, 1039.3114399621122 -102.98263516864998, 1099.384313348691 -48.05886521520657, 1099.6824840778606 5.139171483985346 )"
-			var coords = loads(wkt)
-			var ch = chainDeformation(coords, contexts)
-			g.Assert(ch.size).Equal(4)
-			g.Assert(Homotopy(coords, contexts)).IsFalse()
-		})
-		g.It("should test chain deformation - case 2", func() {
-			g.Timeout(1 * time.Hour)
-			var contextWkts = []string{
-				"POLYGON (( 332.4204965563913 201.64833221861224, 332.4204965563913 235.93798442335282, 344.1291582848393 235.93798442335282, 344.1291582848393 201.64833221861224, 332.4204965563913 201.64833221861224 ))",
-			}
-			var contexts = ctx.NewContexts()
-			for _, c := range contextWkts {
-				contexts.Push(ctx.New(geom.NewPolygonFromWKT(c), 0, -1))
-			}
-			var wkt = "LINESTRING ( 100 239, 100 400, 500 400, 700 200, 200 100, 200 300, 255 300, 256 166, 290 165, 287 301, 326 299, 321 175, 356 174, 356 299, 500 300, 600 200, 400 200, 400 275, 426 275, 429 221, 445 222, 445 272, 461 274, 462 224, 496 227, 495 257 )"
-			g.Assert(Homotopy(loads(wkt), contexts)).IsTrue()
-		})
-		g.It("should test chain deformation - case 3", func() {
-			g.Timeout(1 * time.Hour)
-			var contextWkts = []string{
-				"POLYGON (( 2039.6431464525006 -2800, 2039.6431464525006 -2612.4090716829337, 2200 -2612.4090716829337, 2200 -2800, 2039.6431464525006 -2800 ))",
-				"POLYGON (( 2846.808051525009 -2764.535239139212, 2846.808051525009 -2600, 2964.1021640714234 -2600, 2964.1021640714234 -2764.535239139212, 2846.808051525009 -2764.535239139212 ))",
-			}
-			var contexts = ctx.NewContexts()
-			for _, c := range contextWkts {
-				contexts.Push(ctx.New(geom.NewPolygonFromWKT(c), 0, -1))
-			}
-			var wkt = "LINESTRING ( 1500 -2500, 1502.4236784626214 -2300, 1700 -2300, 1700 -2700, 1200 -2700, 1198.6665502047617 -2100, 1900 -2100, 1900 -2900, 1000 -2900, 1000 -2000, 2300 -2000, 2283.1263244603597 -2858.0908336743546, 2483.1263244603597 -2858.0908336743546, 2483.1263244603597 -2058.0908336743546, 2583.1263244603597 -2058.0908336743546, 2583.1263244603597 -2858.0908336743546, 2783.1263244603597 -2858.0908336743546, 2800 -1900, 3700 -1900, 3700 -2900, 3000 -2900, 3000 -2100, 3500 -2100, 3500 -2700, 3200 -2700, 3200 -2300, 3400 -2300, 3400 -2500 )"
-			g.Assert(Homotopy(loads(wkt), contexts)).IsTrue()
-		})
-
-		g.It("should test chain deformation - case 4", func() {
-			g.Timeout(1 * time.Hour)
-			var contextWkts = []string{
-				"POLYGON (( 300 -1200, 300 -1100, 400 -1100, 400 -1200, 300 -1200 ))",
-			}
-			var contexts = ctx.NewContexts()
-			for _, c := range contextWkts {
-				contexts.Push(ctx.New(geom.NewPolygonFromWKT(c), 0, -1))
-			}
-			var wkt = "LINESTRING ( 300 -1000, 300 -798.933215074757, 300 -600, 600 -500, 1000 -500, 1200 -600, 1400 -700, 1600 -1000, 1600 -1200, 1400 -1200, 1400 -1000, 1200 -800, 1000 -700, 700 -700, 600 -700, 600 -1000, 500 -1200, 400 -1300, 200 -1300, 100 -1100, 100 -800, -100 -800, -100 -1200, 200 -1500, 600 -1500, 800 -1300, 800 -1000 )"
-			g.Assert(Homotopy(loads(wkt), contexts)).IsTrue()
-		})
-
-		g.It("should test chain deformation - case 5", func() {
-			g.Timeout(1 * time.Hour)
-			var contextWkts = []string{
-				"POLYGON (( 4600 -1100, 4600 -900, 4700 -900, 4700 -1100, 4600 -1100 ))",
-			}
-			var contexts = ctx.NewContexts()
-			for _, c := range contextWkts {
-				contexts.Push(ctx.New(geom.NewPolygonFromWKT(c), 0, -1))
-			}
-			var wkt = "LINESTRING ( 2100 -1200, 2400 -1700, 2700 -1900, 3100 -2100, 3700 -2200, 4300 -2100, 4800 -1700, 5000 -1400, 5000 -1100, 5000 -900, 4700 -700, 4400 -700, 4300 -900, 4200 -1100, 4300 -1400, 4000 -1700, 3600 -1400, 3600 -1100, 3800 -900, 3800 -700, 3600 -500, 3200 -600, 3100 -900, 3100 -1200, 3100 -1600, 2800 -1600, 2600 -1400, 2500 -1000, 2600 -600, 2800 -300, 3200 -100, 3900 0, 4452.457844881692 -45.940163083620405, 5100 -200, 5400 -600, 5400 -1200 )"
-			g.Assert(Homotopy(loads(wkt), contexts)).IsTrue()
-		})
 	})
 }

@@ -1,7 +1,6 @@
 package homotopy
 
 import (
-	"fmt"
 	"simplex/ctx"
 	"github.com/intdxdt/geom"
 	"github.com/intdxdt/rtree"
@@ -12,36 +11,21 @@ func chainDeformation(coordinates []*geom.Point, contexts *ctx.ContextGeometries
 	var chain = NewChain(coordinates)
 
 	var deformable = true
-	var n = chain.size - 1
 
 	for deformable && chain.size > 2 {
 		deformable = false
 		var link = chain.link
 
 		for link != nil {
-			if link.i > 0 && link.i < n {
-				if collapseVertex(link, db) {
-					remove(link)
-					chain.size += -1
-					deformable = true
-				}
+			if collapseVertex(link, db) {
+				remove(link)
+				chain.size += -1
+				deformable = true
 			}
 			link = link.next
 		}
-		printChain(chain)
 	}
-
 	return chain
-}
-
-func printChain(chain *Chain) {
-	var coords []*geom.Point
-	var link = chain.link
-	for link != nil {
-		coords = append(coords, link.Point)
-		link = link.next
-	}
-	fmt.Println(geom.NewLineString(coords).WKT())
 }
 
 func contextDB(contexts *ctx.ContextGeometries) *rtree.RTree {
@@ -61,6 +45,10 @@ func collapseVertex(v *Vertex, db *rtree.RTree) bool {
 	}
 	var bln = true
 	var a, b, c = va.Point, vb.Point, vc.Point
+	if online(a, b, c) {
+		return true
+	}
+
 	var box = a.BBox().ExpandIncludeXY(
 		b[0], b[1],
 	).ExpandIncludeXY(c[0], c[1])
@@ -73,6 +61,17 @@ func collapseVertex(v *Vertex, db *rtree.RTree) bool {
 		}
 	}
 	//fmt.Println(geom.NewPolygon([]*geom.Point{a, b, c, a}).WKT())
+	return bln
+}
+
+func online(a, b, c *geom.Point) bool {
+	var bln = false
+	if b.SideOf(a, c).IsOn() {
+		ab := a.Magnitude(b)
+		bc := b.Magnitude(c)
+		ac := a.Magnitude(c)
+		bln = ab <= ac && bc <= ac
+	}
 	return bln
 }
 
