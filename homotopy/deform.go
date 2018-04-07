@@ -43,46 +43,40 @@ func collapseVertex(v *Vertex, db *rtree.RTree) bool {
 	if va == nil || vb == nil || vc == nil {
 		return false
 	}
+
 	var bln = true
 	var a, b, c = va.Point, vb.Point, vc.Point
-	if online(a, b, c) {
-		return true
-	}
 
 	var box = a.BBox().ExpandIncludeXY(
-		b[0], b[1],
-	).ExpandIncludeXY(c[0], c[1])
+		b[geom.X], b[geom.Y],
+	).ExpandIncludeXY(
+		c[geom.X], c[geom.Y],
+	)
 
 	var neighbours = db.Search(box)
 	if len(neighbours) > 0 {
-		var triangle = geom.NewPolygon([]*geom.Point{a, b, c, a})
-		if intersectsTriangle(triangle, neighbours) {
-			bln = false
-		}
-	}
-	//fmt.Println(geom.NewPolygon([]*geom.Point{a, b, c, a}).WKT())
-	return bln
-}
-
-func online(a, b, c *geom.Point) bool {
-	var bln = false
-	if b.SideOf(a, c).IsOn() {
-		ab := a.Magnitude(b)
-		bc := b.Magnitude(c)
-		ac := a.Magnitude(c)
-		bln = ab <= ac && bc <= ac
+		bln = isTriangleCollapsible(a, b, c, neighbours)
 	}
 	return bln
 }
 
 //find if intersects simple
-func intersectsTriangle(triangle *geom.Polygon, neighbours []*rtree.Node) bool {
-	var bln = false
+func isTriangleCollapsible(a, b, c *geom.Point, neighbours []*rtree.Node) bool {
+	var bln = true
+	var coords = []*geom.Point{a, b, c, a}
+	var triangle = geom.NewPolygon(coords)
 	for _, node := range neighbours {
 		n := node.GetItem().(*ctx.ContextGeometry)
 		if triangle.Intersects(n.Geom) {
-			bln = true
-			break
+			//[a,b,c,a]->[0,1,2,3]
+			ab := geom.NewLineString(coords[0:2]) //[a,b]->[0,1]
+			bc := geom.NewLineString(coords[1:3]) //[b,c]->[1,2]
+			ac := geom.NewLineString(coords[2:4]) //[c,a]->[2,3]
+
+			bln = (ab.Intersects(n.Geom) || bc.Intersects(n.Geom)) && ac.Intersects(n.Geom)
+			if !bln {
+				break
+			}
 		}
 	}
 	return bln
