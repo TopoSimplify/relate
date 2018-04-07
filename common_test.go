@@ -7,6 +7,10 @@ import (
 	"github.com/intdxdt/geom"
 )
 
+
+func polyln(wkt string) *pln.Polyline {
+	return pln.New(geom.NewLineStringFromWKT(wkt).Coordinates())
+}
 //hull geom
 func hullGeom(coords []*geom.Point) geom.Geometry {
 	var g geom.Geometry
