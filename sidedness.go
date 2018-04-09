@@ -3,7 +3,7 @@ package relate
 import (
 	"simplex/ctx"
 	"github.com/intdxdt/geom"
-	"simplex/relate/homotopy"
+	"simplex/homotopy"
 )
 
 //Homotopy Relate
