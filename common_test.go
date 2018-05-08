@@ -1,9 +1,9 @@
 package relate
 
 import (
-	"simplex/pln"
-	"simplex/rng"
-	"simplex/node"
+	"github.com/TopoSimplify/pln"
+	"github.com/TopoSimplify/rng"
+	"github.com/TopoSimplify/node"
 	"github.com/intdxdt/geom"
 )
 

@@ -1,9 +1,9 @@
 package relate
 
 import (
-	"simplex/ctx"
+	"github.com/TopoSimplify/ctx"
+	"github.com/TopoSimplify/homotopy"
 	"github.com/intdxdt/geom"
-	"simplex/homotopy"
 )
 
 //Homotopy Relate

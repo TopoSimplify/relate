@@ -1,9 +1,9 @@
 package relate
 
 import (
-	"simplex/ctx"
-	"simplex/node"
-	"simplex/opts"
+	"github.com/TopoSimplify/ctx"
+	"github.com/TopoSimplify/node"
+	"github.com/TopoSimplify/opts"
 )
 
 //distance relate

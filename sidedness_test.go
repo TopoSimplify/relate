@@ -1,11 +1,11 @@
 package relate
 
 import (
-	"testing"
-	"github.com/franela/goblin"
-	"github.com/intdxdt/geom"
 	"time"
-	"simplex/ctx"
+	"testing"
+	"github.com/intdxdt/geom"
+	"github.com/franela/goblin"
+	"github.com/TopoSimplify/ctx"
 )
 
 func TestSidedness(t *testing.T) {

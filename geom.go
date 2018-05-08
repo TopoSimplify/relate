@@ -1,8 +1,8 @@
 package relate
 
 import (
-	"simplex/ctx"
-	"simplex/node"
+	"github.com/TopoSimplify/ctx"
+	"github.com/TopoSimplify/node"
 )
 
 //Node geometric relation to other context geometries
