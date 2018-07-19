@@ -3,12 +3,12 @@ package relate
 import (
 	"time"
 	"testing"
-	"github.com/TopoSimplify/pln"
-	"github.com/TopoSimplify/opts"
-	"github.com/TopoSimplify/ctx"
 	"github.com/intdxdt/geom"
 	"github.com/franela/goblin"
 	"github.com/TopoSimplify/dp"
+	"github.com/TopoSimplify/pln"
+	"github.com/TopoSimplify/opts"
+	"github.com/TopoSimplify/ctx"
 )
 
 func TestRelate(t *testing.T) {
