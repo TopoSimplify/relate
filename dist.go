@@ -10,7 +10,7 @@ import (
 func IsDistRelateValid(options *opts.Opts, hull *node.Node, contexts *ctx.ContextGeometries) bool {
 	var minDistance = options.MinDist
 	var seg = hull.Segment()
-	var lnGeom = hull.Polyline.Geometry
+	var lnGeom = hull.Polyline.Geometry()
 	var original, simple float64
 	var segGeom = seg
 	var g *ctx.ContextGeometry

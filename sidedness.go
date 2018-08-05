@@ -7,6 +7,6 @@ import (
 )
 
 //Homotopy Relate
-func Homotopy(coordinates []geom.Point, contexts *ctx.ContextGeometries) bool {
+func Homotopy(coordinates geom.Coords, contexts *ctx.ContextGeometries) bool {
 	return homotopy.Homotopy(coordinates, contexts)
 }
