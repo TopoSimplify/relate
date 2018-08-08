@@ -6,7 +6,7 @@ import (
 	)
 
 
-func polyln(wkt string) *pln.Polyline {
-	return pln.New(geom.NewLineStringFromWKT(wkt).Coordinates)
+func polyln(wkt string) pln.Polyline {
+	return pln.CreatePolyline(geom.NewLineStringFromWKT(wkt).Coordinates)
 }
 
